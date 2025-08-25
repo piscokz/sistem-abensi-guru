@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('absensis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id')->constrained('sekolahs')->onDelete('cascade');
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
             $table->foreignId('jadwal_detail_id')->constrained('jadwal_details')->onDelete('cascade');
             $table->timestamp('waktu_absen');
-            $table->enum('status', ['hadir', 'izin', 'sakit', 'tanpa_keterangan'])->default('hadir');
-            $table->text('keterangan')->nullable(); // Keterangan tambahan jika ada
             $table->foreignId('qr_token_id')->nullable()->constrained('qr_tokens'); // Untuk audit, absen pakai token QR yang mana
             $table->timestamps();
         });

@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('jadwal_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id')->constrained('sekolahs')->onDelete('cascade');
+            $table->foreignId('jadwal_id')->constrained('jadwals')->onDelete('cascade');
             $table->foreignId('mapel_id')->constrained('mapels')->onDelete('cascade');
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
-            $table->foreignId('jadwal_id')->constrained('jadwals')->onDelete('cascade');
+            $table->foreignId('slot_id')->constrained('slots')->onDelete('cascade');
             $table->string('hari'); // pilihan: 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
             $table->timestamps();
         });
     }

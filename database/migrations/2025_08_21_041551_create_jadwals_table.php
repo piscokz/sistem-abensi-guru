@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sekolah_id')->constrained('sekolahs')->onDelete('cascade');
-            $table->string('nama_kelas');
             $table->string('tahun_ajaran');
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }

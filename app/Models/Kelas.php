@@ -6,24 +6,24 @@ use App\Traits\Multitenantable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Jadwal extends Model
+class Kelas extends Model
 {
     use HasFactory, Multitenantable;
 
-    protected $fillable = ['sekolah_id', 'kelas_id', 'tahun_ajaran', 'is_active'];
-
+    protected $fillable = ['sekolah_id', 'nama_kelas'];
+    
     public function sekolah()
     {
         return $this->belongsTo(Sekolah::class);
     }
 
-    public function kelas()
+    public function siswas()
     {
-        return $this->belongsTo(Kelas::class);
+        return $this->hasMany(Siswa::class);
     }
 
-    public function jadwalDetails()
+    public function jadwals()
     {
-        return $this->hasMany(JadwalDetail::class);
+        return $this->hasMany(Jadwal::class);
     }
 }

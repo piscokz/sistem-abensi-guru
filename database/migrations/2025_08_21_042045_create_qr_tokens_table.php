@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('qr_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id')->constrained('sekolahs')->onDelete('cascade');
-            $table->foreignId('generated_by_siswa_id')->constrained('siswas')->onDelete('cascade');
-            $table->foreignId('jadwal_detail_id')->constrained('jadwal_details')->onDelete('cascade');
             $table->string('token')->unique();
-            $table->enum('status', ['aktif', 'telah_digunakan', 'expired'])->default('aktif');
+            $table->foreignId('jadwal_detail_id')->constrained('jadwal_details')->onDelete('cascade');
+            $table->foreignId('generated_by_siswa_id')->constrained('siswas')->onDelete('cascade');
+            $table->enum('status', ['aktif', 'telah_digunakan', 'expired']);
             $table->timestamp('expired_at');
             $table->timestamps();
         });

@@ -6,9 +6,9 @@ use App\Traits\Multitenantable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Mapel extends Model
+class Slot extends Model
 {
     use HasFactory, Multitenantable;
 
-    protected $fillable = ['sekolah_id', 'nama_mapel', 'status'];
+    protected $fillable = ['sekolah_id', 'nomor_slot', 'jam_mulai', 'jam_selesai'];
 }
