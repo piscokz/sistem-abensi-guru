@@ -4,7 +4,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelasController;
-use App\Models\Kelas;
+use App\Http\Controllers\MapelController;
+use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\GuruController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,7 +38,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:guru_piket')->group(function() {
         Route::name('guru-piket.')->group(function() {
             Route::get('/hal-guru-piket', function() { return "Selamat datang di halaman Guru Piket!";});
-            Route::resource('kelas', KelasController::class);
+            Route::resource('kelas', KelasController::class)->parameters([
+                'kelas' => 'kelas'
+            ]);
+            Route::resource('jadwal', JadwalController::class);
+            Route::resource('mapel', MapelController::class);
+            Route::resource('guru', GuruController::class);
         });
     });
 

@@ -3,67 +3,86 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class KelasController extends Controller
 {
-    // Menampilkan daftar semua kelas
     public function index()
     {
-        // Global Scope multi-tenancy akan otomatis memfilter kelas
-        // berdasarkan sekolah user yang login.
         $daftarKelas = Kelas::orderBy('nama_kelas')->get();
         return view('kelas.index', compact('daftarKelas'));
     }
 
-    // Menampilkan form untuk membuat kelas baru
     public function create()
     {
-        return view('kelas.create');
+        return view('kelas.create', ['kelas' => new Kelas()]);
     }
 
-    // Menyimpan data kelas baru ke database
     public function store(Request $request)
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        // Trait Multitenantable akan otomatis mengisi 'sekolah_id'
+        // buat user untuk akun kelas
+        $user = User::create([
+            'nama' => $request->nama_kelas,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'kelas',
+        ]);
+
+        // buat kelas
         Kelas::create([
+            'user_id' => $user->id,
             'nama_kelas' => $request->nama_kelas,
         ]);
 
         return redirect()->route('guru-piket.kelas.index')
-                         ->with('success', 'Kelas berhasil ditambahkan.');
+            ->with('success', 'Kelas berhasil ditambahkan beserta akun login.');
     }
 
-    // Menampilkan form untuk mengedit kelas
-    public function edit(Kelas $kela) // Laravel akan otomatis mencari data kelas berdasarkan ID
+    public function edit(Kelas $kelas)
     {
-        return view('kelas.edit', compact('kela'));
+        return view('kelas.edit', compact('kelas'));
     }
 
-    // Mengupdate data kelas di database
-    public function update(Request $request, Kelas $kela)
+    public function update(Request $request, Kelas $kelas)
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($kelas->user_id)],
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
-        $kela->update([
+        // update user akun kelas
+        $kelas->user->update([
+            'nama' => $request->nama_kelas,
+            'email' => $request->email,
+            'password' => $request->filled('password') ? Hash::make($request->password) : $kelas->user->password,
+        ]);
+
+        // update kelas
+        $kelas->update([
             'nama_kelas' => $request->nama_kelas,
         ]);
 
         return redirect()->route('guru-piket.kelas.index')
-                         ->with('success', 'Kelas berhasil diperbarui.');
+            ->with('success', 'Kelas berhasil diperbarui.');
     }
 
-    // Menghapus data kelas dari database
-    public function destroy(Kelas $kela)
+    public function destroy(Kelas $kelas)
     {
-        $kela->delete();
+        // hapus user terkait
+        $kelas->user()->delete();
+        $kelas->delete();
 
-        return redirect()->route('guru-piket.kelas.index')->with('success', 'Kelas berhasil dihapus.');
+        return redirect()->route('guru-piket.kelas.index')
+            ->with('success', 'Kelas dan akun login berhasil dihapus.');
     }
 }

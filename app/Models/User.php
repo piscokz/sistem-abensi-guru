@@ -52,9 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Guru::class);
     }
-    public function siswa()
+    public function kelas()
     {
-        return $this->hasOne(Siswa::class);
+        return $this->hasOne(Kelas::class);
     }
     public function sekolah()
     {

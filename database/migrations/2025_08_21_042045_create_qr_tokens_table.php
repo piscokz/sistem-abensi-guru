@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('token')->unique();
             $table->foreignId('jadwal_detail_id')->constrained('jadwal_details')->onDelete('cascade');
-            $table->foreignId('generated_by_siswa_id')->constrained('siswas')->onDelete('cascade');
+            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->enum('status', ['aktif', 'telah_digunakan', 'expired']);
-            $table->timestamp('expired_at');
+            $table->timestamp('expires_at');
             $table->timestamps();
         });
     }

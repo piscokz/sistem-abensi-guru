@@ -9,15 +9,19 @@ class QrToken extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['token', 'jadwal_detail_id', 'generated_by_siswa_id', 'status', 'expires_at'];
+    protected $fillable = ['token', 'jadwal_detail_id', 'kelas_id', 'status', 'expires_at'];
 
     public function jadwalDetail()
     {
         return $this->belongsTo(JadwalDetail::class);
     }
 
-    public function siswaGenerator()
+    public function kelas()
     {
-        return $this->belongsTo(Siswa::class, 'generated_by_siswa_id');
+        return $this->belongsTo(Kelas::class);
+    }
+
+    public function absensi() {
+        return $this->hasOne(Absensi::class);
     }
 }

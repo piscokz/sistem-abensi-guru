@@ -11,4 +11,9 @@ class Mapel extends Model
     use HasFactory, Multitenantable;
 
     protected $fillable = ['sekolah_id', 'nama_mapel', 'status'];
+
+    public function gurus()
+    {
+        return $this->belongsToMany(Guru::class);
+    }
 }
