@@ -2,79 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelas;
 use App\Models\Jadwal;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 
 class JadwalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // List semua jadwal induk
     public function index()
     {
-        //
+        $jadwals = Jadwal::with('kelas')->orderByDesc('created_at')->get();
+        return view('jadwal.index', compact('jadwals'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Form tambah jadwal
     public function create()
     {
-        //
+        $kelas = Kelas::orderBy('nama_kelas')->get();
+        return view('jadwal.create', compact('kelas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Simpan jadwal baru
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'tahun_ajaran' => 'required|string|max:20',
+        ]);
+
+        Jadwal::create([
+            'kelas_id' => $request->kelas_id,
+            'tahun_ajaran' => $request->tahun_ajaran,
+            'is_active' => $request->boolean('is_active'),
+        ]);
+
+        return redirect()->route('guru-piket.jadwal.index')
+            ->with('success', 'Jadwal berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Kelas $kela)
+    // Form edit jadwal
+    public function edit(Jadwal $jadwal)
     {
-    
-    $jadwalAktif = $kela->jadwals()->where('is_active', true)->first();
-
-    // Ambil semua detail jadwal (jika jadwal aktif ditemukan)
-    $detailJadwal = [];
-    if($jadwalAktif) {
-        $detailJadwal = $jadwalAktif->jadwalDetails()
-                            ->with(['slot', 'mapel', 'guru']) // Eager loading
-                            ->orderBy('slot_id')
-                            ->get()
-                            ->groupBy('hari'); // Kelompokkan berdasarkan hari
+        $kelas = Kelas::orderBy('nama_kelas')->get();
+        return view('jadwal.edit', compact('jadwal', 'kelas'));
     }
 
-    // Kita akan membuat view ini nanti saat fokus ke manajemen jadwal
-    return view('jadwal.show', compact('kela', 'jadwalAktif', 'detailJadwal'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Update jadwal
+    public function update(Request $request, Jadwal $jadwal)
     {
-        //
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'tahun_ajaran' => 'required|string|max:20',
+        ]);
+
+        $jadwal->update([
+            'kelas_id' => $request->kelas_id,
+            'tahun_ajaran' => $request->tahun_ajaran,
+            'is_active' => $request->boolean('is_active'),
+        ]);
+
+        return redirect()->route('guru-piket.jadwal.index')
+            ->with('success', 'Jadwal berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Hapus jadwal
+    public function destroy(Jadwal $jadwal)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $jadwal->delete();
+        return redirect()->route('guru-piket.jadwal.index')
+            ->with('success', 'Jadwal berhasil dihapus.');
     }
 }

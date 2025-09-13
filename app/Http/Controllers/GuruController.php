@@ -14,16 +14,13 @@ class GuruController extends Controller
 {
     public function index()
     {
-        // Asumsi Anda punya scope di model Guru untuk filter sekolah
-        $gurus = Guru::with('mapels')->latest()->get();
+        $gurus = Guru::latest()->get();
         return view('guru.index', compact('gurus'));
     }
 
     public function create()
     {
-        // Ambil semua mapel untuk ditampilkan di form
-        $mapels = Mapel::orderBy('nama_mapel')->get();
-        return view('guru.create', compact('mapels'));
+        return view('guru.create');
     }
 
     public function store(Request $request)
@@ -33,8 +30,6 @@ class GuruController extends Controller
             'nip' => ['required', 'string', 'max:50', 'unique:gurus'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'mapels' => ['required', 'array'], // Pastikan mapels adalah array
-            'mapels.*' => ['exists:mapels,id'], // Pastikan setiap item di array ada di tabel mapels
         ]);
         
 
@@ -49,14 +44,11 @@ class GuruController extends Controller
             ]);
 
             // 2. Buat Guru baru
-            $guru = Guru::create([
+            Guru::create([
                 'user_id' => $user->id,
                 'nama_guru' => $request->name,
                 'nip' => $request->nip,
             ]);
-
-            // 3. Hubungkan Guru dengan Mapel menggunakan sync()
-            $guru->mapels()->sync($request->mapels);
         });
 
         return redirect()->route('guru-piket.guru.index')->with('success', 'Data guru berhasil ditambahkan.');
@@ -64,11 +56,7 @@ class GuruController extends Controller
 
     public function edit(Guru $guru)
     {
-        $mapels = Mapel::orderBy('nama_mapel')->get();
-        // Ambil ID mapel yang sudah dimiliki guru untuk pre-select di form
-        $guruMapelIds = $guru->mapels->pluck('id')->toArray();
-
-        return view('guru.edit', compact('guru', 'mapels', 'guruMapelIds'));
+        return view('guru.edit', compact('guru'));
     }
 
     public function update(Request $request, Guru $guru)
@@ -77,8 +65,6 @@ class GuruController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'nip' => ['required', 'string', 'max:50', 'unique:gurus,nip,' . $guru->id],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $guru->user_id],
-            'mapels' => ['required', 'array'],
-            'mapels.*' => ['exists:mapels,id'],
         ]);
 
         DB::transaction(function () use ($request, $guru) {
@@ -103,9 +89,6 @@ class GuruController extends Controller
                     'password' => Hash::make($request->password)
                 ]);
             }
-
-            // 3. Update relasi guru dengan mapel
-            $guru->mapels()->sync($request->mapels);
         });
 
         return redirect()->route('guru-piket.guru.index')->with('success', 'Data guru berhasil diperbarui.');
@@ -113,8 +96,6 @@ class GuruController extends Controller
 
     public function show(Guru $guru)
     {
-        // Muat relasi mapels untuk ditampilkan
-        $guru->load('mapels');
         return view('guru.show', compact('guru'));
     }
 

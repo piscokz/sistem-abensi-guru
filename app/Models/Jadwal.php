@@ -10,19 +10,27 @@ class Jadwal extends Model
 {
     use HasFactory, Multitenantable;
 
-    protected $fillable = ['sekolah_id', 'kelas_id', 'tahun_ajaran', 'is_active'];
+    protected $fillable = [
+        'sekolah_id',
+        'kelas_id',
+        'tahun_ajaran',
+        'is_active',
+    ];
 
+    // Relasi: satu jadwal dimiliki oleh satu sekolah
     public function sekolah()
     {
         return $this->belongsTo(Sekolah::class);
     }
 
+    // Relasi: satu jadwal dimiliki oleh satu kelas
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);
     }
 
-    public function jadwalDetails()
+    // Relasi: satu jadwal punya banyak detail
+    public function details()
     {
         return $this->hasMany(JadwalDetail::class);
     }

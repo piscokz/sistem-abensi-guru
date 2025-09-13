@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('jadwal_id')->constrained('jadwals')->onDelete('cascade');
             $table->foreignId('mapel_id')->constrained('mapels')->onDelete('cascade');
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
-            $table->foreignId('slot_id')->constrained('slots')->onDelete('cascade');
-            $table->string('hari'); // pilihan: 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'
+            // $table->string('hari'); // pilihan: 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'
+            $table->enum('hari', ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']);
+            $table->time('override_start')->nullable();
+            $table->time('override_end')->nullable();
             $table->timestamps();
         });
     }

@@ -32,7 +32,7 @@
                 <p class="mt-1 text-gray-600">{{ $guru->created_at->format('d-m-Y') }}</p>
             </div>
 
-            <div class="mb-4">
+            {{-- <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Mata Pelajaran yang Diajar</label>
                 @if($guru->mapels->isEmpty())
                     <p class="mt-1 text-gray-600">Tidak ada mata pelajaran yang diajar.</p>
@@ -43,7 +43,7 @@
                         @endforeach
                     </ul>
                 @endif
-            </div>
+            </div> --}}
 
             <div class="flex justify-end">
                 <a href="{{ route('guru-piket.guru.index') }}" class="px-4 py-2 bg-gray-200 rounded-lg">Kembali</a>

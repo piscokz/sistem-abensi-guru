@@ -12,8 +12,8 @@ class Mapel extends Model
 
     protected $fillable = ['sekolah_id', 'nama_mapel', 'status'];
 
-    public function gurus()
-    {
-        return $this->belongsToMany(Guru::class);
-    }
+    // public function gurus()
+    // {
+    //     return $this->belongsToMany(Guru::class);
+    // }
 }

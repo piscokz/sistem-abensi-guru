@@ -29,6 +29,9 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kelas
                                 </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Email
+                                </th>
                                 <th scope="col" class="relative px-6 py-3">
                                     <span class="sr-only">Aksi</span>
                                 </th>
@@ -39,6 +42,7 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $kelas->nama_kelas }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $kelas->user->email }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a href="{{ route('guru-piket.jadwal.index', $kelas->id) }}" class="text-green-600 hover:text-green-900 mr-4 font-bold">Lihat Jadwal</a>
                                         <a href="{{ route('guru-piket.kelas.edit', $kelas->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>

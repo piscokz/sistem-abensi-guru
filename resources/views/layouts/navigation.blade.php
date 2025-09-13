@@ -27,6 +27,12 @@
                             <x-nav-link :href="route('guru-piket.guru.index')" :active="request()->routeIs('guru-piket.guru*')">
                                 {{ __('Guru') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('guru-piket.shift.index')" :active="request()->routeIs('guru-piket.shift.*')">
+                                {{ __('Shift dan Jam Mapel') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('guru-piket.jadwal.index')" :active="request()->routeIs('guru-piket.jadwal.*')">
+                                {{ __('Jadwal') }}
+                            </x-nav-link>
                         @endif
                     </div>
                 </div>

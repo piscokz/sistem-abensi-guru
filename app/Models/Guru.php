@@ -27,8 +27,8 @@ class Guru extends Model
         return $this->hasMany(Absensi::class);
     }
 
-    public function mapels()
-    {
-        return $this->belongsToMany(Mapel::class);
-    }
+    // public function mapels()
+    // {
+    //     return $this->belongsToMany(Mapel::class);
+    // }
 }

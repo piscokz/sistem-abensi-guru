@@ -35,7 +35,7 @@
     </div>
 
     {{-- Mapel --}}
-    <div>
+    {{-- <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Mapel yang Diajar</label>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             @foreach ($mapels as $mapel)
@@ -50,7 +50,7 @@
         @error('mapels')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
-    </div>
+    </div> --}}
 
 
     {{-- Password --}}
