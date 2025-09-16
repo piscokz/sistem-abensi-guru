@@ -15,21 +15,26 @@ class Jadwal extends Model
         'kelas_id',
         'tahun_ajaran',
         'is_active',
+        'nama_jadwal',
     ];
 
-    // Relasi: satu jadwal dimiliki oleh satu sekolah
     public function sekolah()
     {
         return $this->belongsTo(Sekolah::class);
     }
 
-    // Relasi: satu jadwal dimiliki oleh satu kelas
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);
     }
 
-    // Relasi: satu jadwal punya banyak detail
+    // 🔑 relasi ke shift melalui pivot jadwal_shifts
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class, 'jadwal_shifts')
+            ->withTimestamps();
+    }
+
     public function details()
     {
         return $this->hasMany(JadwalDetail::class);

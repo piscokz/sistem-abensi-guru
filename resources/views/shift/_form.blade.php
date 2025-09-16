@@ -1,7 +1,7 @@
 @csrf
 <div class="mb-4">
     <label class="block text-sm font-medium">Nama Shift</label>
-    <input type="text" name="nama" placeholder="Contoh: Pagi (07.00 - 11.30)"
+    <input type="text" name="nama" placeholder="Contoh: Shift Pagi (07.00 - 11.30)"
            value="{{ old('nama', $shift->nama ?? '') }}"
            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
     @error('nama') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror

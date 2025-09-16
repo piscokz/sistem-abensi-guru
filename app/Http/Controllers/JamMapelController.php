@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JamMapel;
 use App\Models\Shift;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class JamMapelController extends Controller
 {
@@ -35,11 +36,19 @@ class JamMapelController extends Controller
     public function store(Request $request, Shift $shift)
     {
         $request->validate([
-            'nomor_jam'   => 'required|integer|min:1',
+            'nomor_jam'   => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('jam_mapels', 'nomor_jam')->where(function ($query) use ($shift) {
+                    return $query->where('shift_id', $shift->id);
+                }),
+            ],
             'jam_mulai'   => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'keterangan'  => 'nullable|string|max:255',
         ]);
+
 
         $shift->jamMapels()->create([
             'shift_id'   => $shift->id,
@@ -69,11 +78,19 @@ class JamMapelController extends Controller
     public function update(Request $request, JamMapel $jamMapel)
     {
         $request->validate([
-            'nomor_jam'   => 'required|integer|min:1',
+            'nomor_jam'   => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('jam_mapels', 'nomor_jam')
+                    ->where(fn($query) => $query->where('shift_id', $jamMapel->shift_id))
+                    ->ignore($jamMapel->id),
+            ],
             'jam_mulai'   => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'keterangan'  => 'nullable|string|max:255',
         ]);
+
 
         $jamMapel->update([
             'nomor_jam'  => $request->nomor_jam,

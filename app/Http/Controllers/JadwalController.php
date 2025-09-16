@@ -2,74 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jadwal;
 use App\Models\Kelas;
+use App\Models\Jadwal;
+use App\Models\Shift;
 use Illuminate\Http\Request;
 
 class JadwalController extends Controller
 {
-    // List semua jadwal induk
-    public function index()
+    // Daftar jadwal untuk kelas tertentu
+    public function index(Kelas $kelas)
     {
-        $jadwals = Jadwal::with('kelas')->orderByDesc('created_at')->get();
-        return view('jadwal.index', compact('jadwals'));
+        $jadwals = $kelas->jadwals()->with('shifts')->get();
+        return view('jadwal.index', compact('kelas', 'jadwals'));
     }
 
-    // Form tambah jadwal
-    public function create()
+    // Form buat jadwal baru
+    public function create(Kelas $kelas)
     {
-        $kelas = Kelas::orderBy('nama_kelas')->get();
-        return view('jadwal.create', compact('kelas'));
+        $shifts = Shift::orderBy('nama')->get();
+        return view('jadwal.create', compact('kelas', 'shifts'));
     }
 
     // Simpan jadwal baru
-    public function store(Request $request)
+    public function store(Request $request, Kelas $kelas)
     {
         $request->validate([
-            'kelas_id' => 'required|exists:kelas,id',
-            'tahun_ajaran' => 'required|string|max:20',
+            'shift_id' => 'required|exists:shifts,id',
         ]);
 
-        Jadwal::create([
-            'kelas_id' => $request->kelas_id,
-            'tahun_ajaran' => $request->tahun_ajaran,
-            'is_active' => $request->boolean('is_active'),
+        $jadwal = $kelas->jadwals()->create([
+            'sekolah_id' => auth()->user()->sekolah_id,
+            'tahun_ajaran' => now()->year,
+            'is_active' => true,
+            'nama_jadwal' => Shift::find($request->shift_id)->nama, // ambil nama shift
         ]);
 
-        return redirect()->route('guru-piket.jadwal.index')
-            ->with('success', 'Jadwal berhasil dibuat.');
+        $jadwal->shifts()->attach($request->shift_id);
+
+        return redirect()->route('guru-piket.kelas.jadwal.index', $kelas->id)
+            ->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
+
     // Form edit jadwal
-    public function edit(Jadwal $jadwal)
+    public function edit(Kelas $kelas, Jadwal $jadwal)
     {
-        $kelas = Kelas::orderBy('nama_kelas')->get();
-        return view('jadwal.edit', compact('jadwal', 'kelas'));
+        $shifts = Shift::orderBy('nama')->get();
+        return view('jadwal.edit', compact('kelas', 'jadwal', 'shifts'));
     }
 
     // Update jadwal
-    public function update(Request $request, Jadwal $jadwal)
+    public function update(Request $request, Kelas $kelas, Jadwal $jadwal)
     {
         $request->validate([
-            'kelas_id' => 'required|exists:kelas,id',
-            'tahun_ajaran' => 'required|string|max:20',
+            'shift_id' => 'required|exists:shifts,id',
         ]);
 
         $jadwal->update([
-            'kelas_id' => $request->kelas_id,
-            'tahun_ajaran' => $request->tahun_ajaran,
             'is_active' => $request->boolean('is_active'),
+            'nama_jadwal' => Shift::find($request->shift_id)->nama, // update sesuai shift
         ]);
 
-        return redirect()->route('guru-piket.jadwal.index')
+        $jadwal->shifts()->sync($request->shift_id);
+
+        return redirect()->route('guru-piket.kelas.jadwal.index', $kelas->id)
             ->with('success', 'Jadwal berhasil diperbarui.');
     }
 
+
     // Hapus jadwal
-    public function destroy(Jadwal $jadwal)
+    public function destroy(Kelas $kelas, Jadwal $jadwal)
     {
         $jadwal->delete();
-        return redirect()->route('guru-piket.jadwal.index')
+        return redirect()->route('guru-piket.kelas.jadwal.index', $kelas->id)
             ->with('success', 'Jadwal berhasil dihapus.');
     }
 }

@@ -19,7 +19,7 @@
                         {{-- Guru Piket --}}
                         @if (auth()->user()->role === 'guru_piket' || auth()->user()->role === 'kurikulum')
                             <x-nav-link :href="route('guru-piket.kelas.index')" :active="request()->routeIs('guru-piket.kelas.*')">
-                                {{ __('Kelas') }}
+                                {{ __('Kelas & Jadwal') }}
                             </x-nav-link>
                             <x-nav-link :href="route('guru-piket.mapel.index')" :active="request()->routeIs('guru-piket.mapel.*')">
                                 {{ __('Mapel') }}
@@ -28,11 +28,11 @@
                                 {{ __('Guru') }}
                             </x-nav-link>
                             <x-nav-link :href="route('guru-piket.shift.index')" :active="request()->routeIs('guru-piket.shift.*')">
-                                {{ __('Shift dan Jam Mapel') }}
+                                {{ __('Shift & Jam Mapel') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('guru-piket.jadwal.index')" :active="request()->routeIs('guru-piket.jadwal.*')">
+                            {{-- <x-nav-link :href="route('guru-piket.kelas.jadwal.index')" :active="request()->routeIs('guru-piket.jadwal.*')">
                                 {{ __('Jadwal') }}
-                            </x-nav-link>
+                            </x-nav-link> --}}
                         @endif
                     </div>
                 </div>

@@ -13,17 +13,22 @@ class JamMapel extends Model
 
     protected $fillable = ['sekolah_id', 'nomor_jam', 'jam_mulai', 'jam_selesai', 'keterangan'];
 
-    public function JamMulai($value)
+    public function getJamMulaiAttribute($value)
     {
-        return Carbon::parse($value)->format('H:i');
+        return $value ? \Carbon\Carbon::parse($value)->format('H:i') : null;
     }
 
-    public function JamSelesai($value)
+    public function getJamSelesaiAttribute($value)
     {
-        return Carbon::parse($value)->format('H:i');
+        return $value ? \Carbon\Carbon::parse($value)->format('H:i') : null;
     }
+
     public function shift()
     {
         return $this->belongsTo(Shift::class);
+    }
+    public function jadwalDetails()
+    {
+        return $this->hasMany(JadwalDetail::class);
     }
 }

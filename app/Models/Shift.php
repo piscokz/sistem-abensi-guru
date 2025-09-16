@@ -10,19 +10,22 @@ class Shift extends Model
 {
     use HasFactory, Multitenantable;
 
-    protected $fillable = ['nama'];
+    protected $fillable = ['nama', 'sekolah_id'];
 
     public function jamMapels()
     {
         return $this->hasMany(JamMapel::class);
     }
-    public function shiftKelas()
-    {
-        return $this->hasMany(ShiftKelas::class);
-    }
 
     public function sekolah()
     {
         return $this->belongsTo(Sekolah::class);
+    }
+
+    // 🔑 relasi ke jadwal melalui pivot jadwal_shifts
+    public function jadwals()
+    {
+        return $this->belongsToMany(Jadwal::class, 'jadwal_shifts')
+            ->withTimestamps();
     }
 }

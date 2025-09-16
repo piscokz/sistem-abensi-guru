@@ -28,10 +28,10 @@ class KelasController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
-
+        
         // buat user untuk akun kelas
         $user = User::create([
-            'nama' => $request->nama_kelas,
+            'name' => $request->nama_kelas,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'kelas',
@@ -47,28 +47,28 @@ class KelasController extends Controller
             ->with('success', 'Kelas berhasil ditambahkan beserta akun login.');
     }
 
-    public function edit(Kelas $kelas)
+    public function edit(Kelas $kela)
     {
-        return view('kelas.edit', compact('kelas'));
+        return view('kelas.edit', compact('kela'));
     }
 
-    public function update(Request $request, Kelas $kelas)
+    public function update(Request $request, Kelas $kela)
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($kelas->user_id)],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($kela->user_id)],
             'password' => 'nullable|min:6|confirmed',
         ]);
-
+        
         // update user akun kelas
-        $kelas->user->update([
-            'nama' => $request->nama_kelas,
+        $kela->user->update([
+            'name' => $request->nama_kelas,
             'email' => $request->email,
-            'password' => $request->filled('password') ? Hash::make($request->password) : $kelas->user->password,
+            'password' => $request->filled('password') ? Hash::make($request->password) : $kela->user->password,
         ]);
 
         // update kelas
-        $kelas->update([
+        $kela->update([
             'nama_kelas' => $request->nama_kelas,
         ]);
 
@@ -76,11 +76,11 @@ class KelasController extends Controller
             ->with('success', 'Kelas berhasil diperbarui.');
     }
 
-    public function destroy(Kelas $kelas)
+    public function destroy(Kelas $kela)
     {
         // hapus user terkait
-        $kelas->user()->delete();
-        $kelas->delete();
+        $kela->user()->delete();
+        $kela->delete();
 
         return redirect()->route('guru-piket.kelas.index')
             ->with('success', 'Kelas dan akun login berhasil dihapus.');

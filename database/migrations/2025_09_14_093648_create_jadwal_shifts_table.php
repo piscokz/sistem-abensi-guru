@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shift_kelas', function (Blueprint $table) {
+        Schema::create('jadwal_shifts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id')->constrained('sekolahs')->onDelete('cascade');
-            $table->foreignId('shift_id')->constrained('shifts')->onDelete('cascade');
             $table->foreignId('jadwal_id')->constrained('jadwals')->onDelete('cascade');
+            $table->foreignId('shift_id')->constrained('shifts')->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['jadwal_id', 'shift_id']);
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shift_kelas');
+        Schema::dropIfExists('jadwal_shifts');
     }
 };

@@ -8,6 +8,7 @@ use App\Http\Controllers\MapelController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JamMapelController;
+use App\Http\Controllers\JadwalDetailController;
 use App\Http\Controllers\ShiftController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,14 +48,19 @@ Route::middleware('auth')->group(function () {
             Route::resource('kelas', KelasController::class);
             Route::resource('mapel', MapelController::class);
             Route::resource('guru', GuruController::class);
-
             Route::resource('shift', ShiftController::class);
 
             // nested: shift -> jam-mapel
             Route::resource('shift.jam-mapel', JamMapelController::class)->shallow();
 
-            Route::resource('jadwal', JadwalController::class);
-            // Route::resource('jadwal.details', JadwalDetailController::class)->shallow();
+            // Resource jadwal induk
+            // Route::resource('jadwal', JadwalController::class);
+
+            Route::resource('kelas.jadwal', JadwalController::class)
+                ->parameters(['kelas' => 'kelas', 'jadwal' => 'jadwal']);
+
+            // Nested resource untuk detail jadwal
+            Route::resource('jadwal.details', JadwalDetailController::class);
         });
     });
 
