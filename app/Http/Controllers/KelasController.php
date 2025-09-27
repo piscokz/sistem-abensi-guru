@@ -34,7 +34,7 @@ class KelasController extends Controller
             'name' => $request->nama_kelas,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'kelas',
+            'role' => 'kelas_siswa',
         ]);
 
         // buat kelas

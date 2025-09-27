@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
             $table->foreignId('jadwal_detail_id')->constrained('jadwal_details')->onDelete('cascade');
             $table->timestamp('waktu_absen');
-            $table->foreignId('qr_token_id')->nullable()->constrained('qr_tokens'); // Untuk audit, absen pakai token QR yang mana
+            $table->foreignId('qr_token_id')->constrained('qr_tokens'); // Untuk audit, absen pakai token QR yang mana
             $table->timestamps();
         });
     }

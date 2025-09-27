@@ -25,14 +25,6 @@
     @error('jam_selesai') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
 </div>
 
-<div class="mb-4">
-    <label class="block text-sm font-medium">Keterangan (opsional)</label>
-    <input type="text" name="keterangan"
-           value="{{ old('keterangan', $jamMapel->keterangan ?? '') }}"
-           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-    @error('keterangan') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-</div>
-
 <button type="submit"
         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
     {{ $tombol }}

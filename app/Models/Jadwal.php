@@ -13,13 +13,12 @@ class Jadwal extends Model
     protected $fillable = [
         'sekolah_id',
         'kelas_id',
-        'tahun_ajaran',
-        'is_active',
+        'shift_id',
         'nama_jadwal',
     ];
 
     public function sekolah()
-    {
+    { 
         return $this->belongsTo(Sekolah::class);
     }
 
@@ -27,16 +26,16 @@ class Jadwal extends Model
     {
         return $this->belongsTo(Kelas::class);
     }
-
-    // 🔑 relasi ke shift melalui pivot jadwal_shifts
-    public function shifts()
-    {
-        return $this->belongsToMany(Shift::class, 'jadwal_shifts')
-            ->withTimestamps();
+    
+    public function shift() {
+        return $this->belongsTo(Shift::class);
     }
 
-    public function details()
-    {
+    public function detailJamMapels() {
+        return $this->hasMany(DetailJamMapel::class);
+    }
+
+    public function details() {
         return $this->hasMany(JadwalDetail::class);
     }
 }

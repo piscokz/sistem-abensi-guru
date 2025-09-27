@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('nomor_jam'); // pakai integer
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-            $table->string('keterangan')->nullable(); // misal "Jam ke-1 siang"
             $table->timestamps();
         });
     }

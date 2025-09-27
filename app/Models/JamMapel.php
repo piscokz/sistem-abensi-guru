@@ -27,8 +27,4 @@ class JamMapel extends Model
     {
         return $this->belongsTo(Shift::class);
     }
-    public function jadwalDetails()
-    {
-        return $this->hasMany(JadwalDetail::class);
-    }
 }

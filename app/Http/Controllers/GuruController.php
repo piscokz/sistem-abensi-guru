@@ -70,7 +70,7 @@ class GuruController extends Controller
         DB::transaction(function () use ($request, $guru) {
             // 1. Update data di tabel User
             $guru->user->update([
-                'nama' => $request->name,
+                'name' => $request->name,
                 'email' => $request->email,
             ]);
 

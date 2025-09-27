@@ -58,9 +58,9 @@ class SekolahUserSeeder extends Seeder
             $user = User::create([
                 'sekolah_id' => $sekolah->id,
                 'name'       => $namaKelas,
-                'email'      => str_replace(' ', '_', strtolower($namaKelas)) . '@kelas.com',
+                'email'      => str_replace(' ', '_', strtolower($namaKelas)) . '@gmail.com',
                 'password'   => Hash::make('kelas1234'),
-                'role'       => 'kelas',
+                'role'       => 'kelas_siswa',
             ]);
 
             $kelasData[] = Kelas::create([
@@ -127,7 +127,6 @@ class SekolahUserSeeder extends Seeder
                 'nomor_jam'  => $i + 1,
                 'jam_mulai'  => $mulai,
                 'jam_selesai' => $jamSelesai[$i],
-                'keterangan' => 'Jam ke-' . ($i + 1),
             ]);
         }
 
@@ -141,18 +140,7 @@ class SekolahUserSeeder extends Seeder
                 'nomor_jam'  => $i + 1,
                 'jam_mulai'  => $mulai,
                 'jam_selesai' => $jamSelesai[$i],
-                'keterangan' => 'Jam ke-' . ($i + 1),
             ]);
         }
-
-        // 9. Buat jadwal contoh untuk kelas pertama dengan shift pagi
-        $jadwal = Jadwal::create([
-            'sekolah_id'   => $sekolah->id,
-            'kelas_id'     => $kelasData[0]->id,
-            'tahun_ajaran' => now()->year,
-            'is_active'    => true,
-            'nama_jadwal'  => $shiftPagi->nama,
-        ]);
-        $jadwal->shifts()->attach($shiftPagi->id);
     }
 }

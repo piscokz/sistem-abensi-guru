@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Jadwal untuk {{ $kelas->nama_kelas }}
+            Jadwal Kelas {{ $kelas->nama_kelas }}
         </h2>
     </x-slot>
 
@@ -23,9 +23,8 @@
                 <table class="min-w-full border border-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-2 border">#</th>
-                            <th class="px-4 py-2 border">Nama Jadwal</th>
-                            <th class="px-4 py-2 border">Status</th>
+                            <th class="px-4 py-2 border">No</th>
+                            <th class="px-4 py-2 border">Shift</th>
                             <th class="px-4 py-2 border">Aksi</th>
                         </tr>
                     </thead>
@@ -34,21 +33,15 @@
                             <tr>
                                 <td class="px-4 py-2 border">{{ $loop->iteration }}</td>
                                 <td class="px-4 py-2 border">
-                                    {{ $jadwal->shifts->pluck('nama')->join(', ') ?: '-' }}
-                                </td>
-                                <td class="px-4 py-2 border">
-                                    @if ($jadwal->is_active)
-                                        <span class="text-green-600 font-semibold">Aktif</span>
-                                    @else
-                                        <span class="text-gray-500">Nonaktif</span>
-                                    @endif
+                                    {{ $jadwal->nama_jadwal }}
                                 </td>
                                 <td class="px-4 py-2 border space-x-2">
                                     <a href="{{ route('guru-piket.jadwal.details.index', $jadwal->id) }}"
                                         class="text-blue-600 hover:underline">Detail jadwal</a>
                                     <a href="{{ route('guru-piket.kelas.jadwal.edit', [$kelas->id, $jadwal->id]) }}"
                                         class="text-indigo-600 hover:underline">Edit</a>
-                                    <form action="{{ route('guru-piket.kelas.jadwal.destroy', [$kelas->id, $jadwal->id]) }}"
+                                    <form
+                                        action="{{ route('guru-piket.kelas.jadwal.destroy', [$kelas->id, $jadwal->id]) }}"
                                         method="POST" class="inline"
                                         onsubmit="return confirm('Yakin hapus jadwal ini?')">
                                         @csrf

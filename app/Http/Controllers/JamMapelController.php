@@ -46,7 +46,6 @@ class JamMapelController extends Controller
             ],
             'jam_mulai'   => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-            'keterangan'  => 'nullable|string|max:255',
         ]);
 
 
@@ -55,7 +54,6 @@ class JamMapelController extends Controller
             'nomor_jam'  => $request->nomor_jam,
             'jam_mulai'  => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
-            'keterangan' => $request->keterangan,
         ]);
 
         return redirect()
@@ -88,7 +86,6 @@ class JamMapelController extends Controller
             ],
             'jam_mulai'   => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-            'keterangan'  => 'nullable|string|max:255',
         ]);
 
 
@@ -96,7 +93,6 @@ class JamMapelController extends Controller
             'nomor_jam'  => $request->nomor_jam,
             'jam_mulai'  => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
-            'keterangan' => $request->keterangan,
         ]);
 
         return redirect()

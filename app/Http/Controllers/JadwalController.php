@@ -12,7 +12,8 @@ class JadwalController extends Controller
     // Daftar jadwal untuk kelas tertentu
     public function index(Kelas $kelas)
     {
-        $jadwals = $kelas->jadwals()->with('shifts')->get();
+        $jadwals = $kelas->jadwals()->with('shift')->get();
+        // dd($jadwals);
         return view('jadwal.index', compact('kelas', 'jadwals'));
     }
 
@@ -27,17 +28,17 @@ class JadwalController extends Controller
     public function store(Request $request, Kelas $kelas)
     {
         $request->validate([
-            'shift_id' => 'required|exists:shifts,id',
+            // pastikan shift_id ada di tabel shifts dan shift belum dipakai di jadwal kelas ini
+            'shift_id' => 'required|exists:shifts,id|unique:jadwals,shift_id,NULL,id,kelas_id,' . $kelas->id,
+            // 'shift_id' => 'required|exists:shifts,id',
         ]);
 
-        $jadwal = $kelas->jadwals()->create([
-            'sekolah_id' => auth()->user()->sekolah_id,
-            'tahun_ajaran' => now()->year,
-            'is_active' => true,
+        Jadwal::create([
+            'sekolah_id' => $kelas->sekolah_id,
+            'kelas_id' => $kelas->id,
+            'shift_id' => $request->shift_id,
             'nama_jadwal' => Shift::find($request->shift_id)->nama, // ambil nama shift
         ]);
-
-        $jadwal->shifts()->attach($request->shift_id);
 
         return redirect()->route('guru-piket.kelas.jadwal.index', $kelas->id)
             ->with('success', 'Jadwal berhasil ditambahkan.');
@@ -55,15 +56,13 @@ class JadwalController extends Controller
     public function update(Request $request, Kelas $kelas, Jadwal $jadwal)
     {
         $request->validate([
-            'shift_id' => 'required|exists:shifts,id',
+            // pastikan shift_id ada di tabel shifts dan jika update shift_id, pastikan unik di jadwals kecuali jadwal ini
+            'shift_id' => 'required|exists:shifts,id|unique:jadwals,shift_id,' . $jadwal->id . ',id,kelas_id,' . $kelas->id,
         ]);
 
         $jadwal->update([
-            'is_active' => $request->boolean('is_active'),
             'nama_jadwal' => Shift::find($request->shift_id)->nama, // update sesuai shift
         ]);
-
-        $jadwal->shifts()->sync($request->shift_id);
 
         return redirect()->route('guru-piket.kelas.jadwal.index', $kelas->id)
             ->with('success', 'Jadwal berhasil diperbarui.');

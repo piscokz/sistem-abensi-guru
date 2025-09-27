@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sekolah_id')->constrained('sekolahs')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
+            $table->foreignId('shift_id')->constrained('shifts')->onDelete('cascade')->unique();
             $table->string('nama_jadwal'); // contoh: Pagi, Siang
-            $table->string('tahun_ajaran')->nullable(); // contoh: "2025/2026"
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

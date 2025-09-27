@@ -22,10 +22,8 @@ class Shift extends Model
         return $this->belongsTo(Sekolah::class);
     }
 
-    // 🔑 relasi ke jadwal melalui pivot jadwal_shifts
     public function jadwals()
     {
-        return $this->belongsToMany(Jadwal::class, 'jadwal_shifts')
-            ->withTimestamps();
+        return $this->hasMany(Jadwal::class);
     }
 }

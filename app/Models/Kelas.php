@@ -24,12 +24,11 @@ class Kelas extends Model
 
     public function qrTokens()
     {
-        return $this->hasMany(QrToken::class);
-        
+        return $this->hasMany(QrToken::class);      
     }
 
     public function jadwals()
     {
-        return $this->hasMany(Jadwal::class);
+        return $this->hasOne(Jadwal::class);
     }
 }

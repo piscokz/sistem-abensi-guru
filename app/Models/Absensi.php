@@ -12,7 +12,7 @@ class Absensi extends Model
     protected $fillable = ['guru_id', 'jadwal_detail_id', 'waktu_absen', 'qr_token_id'];
 
     public function guru()
-    {
+    {   
         return $this->belongsTo(Guru::class);
     }
 

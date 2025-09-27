@@ -20,11 +20,6 @@ class Sekolah extends Model
     {
         return $this->hasMany(Guru::class);
     }
-
-    public function siswas()
-    {
-        return $this->hasMany(Siswa::class);
-    }
     
     public function kelas()
     {
