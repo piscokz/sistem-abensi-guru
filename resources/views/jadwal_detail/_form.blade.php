@@ -1,4 +1,6 @@
 @csrf
+<input type="hidden" name="jadwal_id" value="{{ $jadwal->id }}">
+
 <div class="mb-4">
     <label for="hari" class="block text-sm font-medium text-gray-700">Hari</label>
     @if (isset($hari))

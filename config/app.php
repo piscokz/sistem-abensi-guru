@@ -65,7 +65,9 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // 'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -79,6 +81,7 @@ return [
     */
 
     'locale' => env('APP_LOCALE', 'en'),
+    'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 

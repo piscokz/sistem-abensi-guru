@@ -3,22 +3,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
-                    {{-- Guru Piket & Kurikulum --}}
-                    @if (auth()->user()->role === 'guru_piket' || auth()->user()->role === 'kurikulum')
-                        <!-- Logo -->
-                        <div class="shrink-0 flex items-center">
-                            <a href="{{ route('dashboard') }}">
-                                <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                            </a>
-                        </div>
-                    @else
-                        <!-- Logo -->
-                        <div class="shrink-0 flex items-center">
-                            <a>
-                                <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                            </a>
-                        </div>
-                    @endif
+                    <!-- Logo + Teks -->
+                    <div class="shrink-0 flex items-center">
+                        <a href="{{ route('basecamp') }}" class="flex items-center">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                            <span class="ml-3 text-lg font-semibold text-gray-800">
+                                Sistem Absensi Guru
+                            </span>
+                        </a>
+                    </div>
 
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -28,7 +21,7 @@
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Dashboard') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('guru-piket.kelas.index')" :active="request()->routeIs('guru-piket.kelas.*')">
+                            <x-nav-link :href="route('guru-piket.kelas.index')" :active="request()->routeIs(['guru-piket.kelas.*', 'guru-piket.jadwal.*'])">
                                 {{ __('Kelas & Jadwal') }}
                             </x-nav-link>
                             <x-nav-link :href="route('guru-piket.mapel.index')" :active="request()->routeIs('guru-piket.mapel.*')">
@@ -40,11 +33,32 @@
                             <x-nav-link :href="route('guru-piket.shift.index')" :active="request()->routeIs('guru-piket.shift.*')">
                                 {{ __('Shift & Jam Mapel') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('guru-piket.absensi')" :active="request()->routeIs('guru-piket.absensi')">
+                                {{ __('Absensi Guru') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('guru-piket.libur.index')" :active="request()->routeIs('guru-piket.libur.index')">
+                                {{ __('Tanggal Merah') }}
+                            </x-nav-link>
                         @elseif (auth()->user()->role === 'kelas_siswa')
-                            <x-nav-link :href="route('kelas_siswa.jadwal.index')" :active="request()->routeIs('kelas_siswa.jadwal.*')">
-                                {{ __('Jadwal') }}
+                            <x-nav-link :href="route('kelas-siswa.jadwal.index')" :active="request()->routeIs('kelas-siswa.jadwal.*')">
+                                {{ __('Jadwal Mapel') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('kelas-siswa.qr-generate.index')" :active="request()->routeIs('kelas-siswa.qr-generate.*')">
+                                {{ __('Generate QR') }}
+                            </x-nav-link>
+                        @elseif (auth()->user()->role === 'guru_mapel')
+                        <x-nav-link :href="route('guru-mapel.jadwal.index')" :active="request()->routeIs('guru-mapel.jadwal.*')">
+                            {{ __('Jadwal Mengajar') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('guru-mapel.rekap-absensi')" :active="request()->routeIs('guru-mapel.rekap-absensi')">
+                            {{ __('Rekap Absensi') }}
+                        </x-nav-link>
+                            <x-nav-link :href="route('guru-mapel.scan-qr.index')" :active="request()->routeIs('guru-mapel.scan-qr.*')">
+                                {{ __('Absen') }}
                             </x-nav-link>
                         @endif
+
+                        {{-- guru-mapel.jadwal.index --}}
                     </div>
                 </div>
 
@@ -105,11 +119,46 @@
 
         <!-- Responsive Navigation Menu -->
         <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-            {{-- Level Guru Piket & Kurikulum --}}
             <div class="pt-2 pb-3 space-y-1">
-                @if (auth()->user()->route === 'guru_piket' || auth()->user()->route === 'kurikulum')
+                {{-- Guru Piket --}}
+                @if (auth()->user()->role === 'guru_piket' || auth()->user()->role === 'kurikulum')
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-piket.kelas.index')" :active="request()->routeIs(['guru-piket.kelas.*', 'guru-piket.jadwal.*'])">
+                        {{ __('Kelas & Jadwal') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-piket.mapel.index')" :active="request()->routeIs('guru-piket.mapel.*')">
+                        {{ __('Mapel') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-piket.guru.index')" :active="request()->routeIs('guru-piket.guru.*')">
+                        {{ __('Guru') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-piket.shift.index')" :active="request()->routeIs(['guru-piket.shift.*', 'guru-piket.jam-mapel.*'])">
+                        {{ __('Shift & Jam Mapel') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-piket.absensi')" :active="request()->routeIs('guru-piket.absensi.index')">
+                        {{ __('Absensi Guru') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-piket.libur.index')" :active="request()->routeIs('guru-piket.libur.index')">
+                        {{ __('Tanggal Merah') }}
+                    </x-responsive-nav-link>
+                @elseif (auth()->user()->role === 'kelas_siswa')
+                    <x-responsive-nav-link :href="route('kelas-siswa.jadwal.index')" :active="request()->routeIs('kelas-siswa.jadwal.*')">
+                        {{ __('Jadwal Mapel') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('kelas-siswa.qr-generate.index')" :active="request()->routeIs('kelas-siswa.qr-generate.*')">
+                        {{ __('Generate QR') }}
+                    </x-responsive-nav-link>
+                @elseif (auth()->user()->role === 'guru_mapel')
+                    <x-responsive-nav-link :href="route('guru-mapel.jadwal.index')" :active="request()->routeIs('guru-mapel.jadwal.*')">
+                        {{ __('Jadwal Mengajar') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-mapel.rekap-absensi')" :active="request()->routeIs('guru-mapel.rekap-absensi')">
+                        {{ __('Rekap Absensi') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('guru-mapel.scan-qr.index')" :active="request()->routeIs('guru-mapel.scan-qr.*')">
+                        {{ __('Absen') }}
                     </x-responsive-nav-link>
                 @endif
             </div>

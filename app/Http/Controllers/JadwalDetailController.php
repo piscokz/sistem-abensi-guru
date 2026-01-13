@@ -14,75 +14,78 @@ class JadwalDetailController extends Controller
 {
     public function index(Jadwal $jadwal)
     {
-        $jadwal->load('kelas', 'shift');
+        $namaKelas = $jadwal->kelas->nama_kelas;
 
-        $shift = $jadwal->shift()->first();
-        if (!$shift) {
-            return redirect()->back()->with('error', 'Shift belum dipilih untuk jadwal ini.');
-        }
+        // $jadwalDetail = JadwalDetail::where('jadwal_id', $jadwal->id)->get()->groupBy('hari');
+        // dd($jadwalDetail);
 
-        $jamMapels = $shift->jamMapels()->orderBy('nomor_jam')->get();
-
-        // Ambil detail jadwal per hari
-        $detailJamMapels = DetailJamMapel::with(['jadwalDetail.mapel', 'jadwalDetail.guru', 'jamMapel'])
-            ->where('jadwal_id', $jadwal->id)
+        $jadwalDetail = JadwalDetail::where('jadwal_id', $jadwal->id)
+            ->with(['mapel', 'guru', 'jamMapel'])
             ->get()
-            ->groupBy(fn($d) => $d->jadwalDetail->hari);
+            ->groupBy('hari');
 
-        // Bentuk ulang jadi slot siap render
-        $groupedDetails = collect(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])->mapWithKeys(function ($hari) use ($detailJamMapels, $jamMapels) {
-            $dayDetails = $detailJamMapels->get($hari, collect())
-                ->sortBy(fn($d) => $d->jamMapel->nomor_jam)
-                ->values();
+        // urutan hari yang diinginkan
+        $order = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-            $groups = [];
-            $i = 0;
-            $totalSlot = $jamMapels->count();
-
-            while ($i < $totalSlot) {
-                $currentJam = $jamMapels[$i];
-                $detail = $dayDetails->firstWhere('jam_mapel_id', $currentJam->id);
-
-                $colspan = 1;
-                $j = $i + 1;
-
-                if ($detail) {
-                    // gabung kalau mapel & guru sama
-                    while (
-                        $j < $totalSlot &&
-                        ($nextDetail = $dayDetails->firstWhere('jam_mapel_id', $jamMapels[$j]->id)) &&
-                        $nextDetail->mapel_id == $detail->mapel_id &&
-                        $nextDetail->guru_id == $detail->guru_id
-                    ) {
-                        $colspan++;
-                        $j++;
-                    }
-                    $groups[] = [
-                        'type' => 'detail',
-                        'detail' => $detail,
-                        'colspan' => $colspan,
-                    ];
-                } else {
-                    $groups[] = [
-                        'type' => 'empty',
-                        'jam_id' => $currentJam->id,
-                        'colspan' => 1,
-                    ];
-                    $j = $i + 1;
-                }
-
-                $i = $j;
-            }
-
-            return [$hari => $groups];
+        // sort collection sesuai urutan manual
+        $jadwalDetail = $jadwalDetail->sortBy(function ($value, $key) use ($order) {
+            return array_search($key, $order);
         });
 
-        return view('jadwal_detail.index', [
-            'jadwal' => $jadwal,
-            'jamMapels' => $jamMapels,
-            'groupedDetails' => $groupedDetails,
-        ]);
+
+
+        $jamMapel = JamMapel::where('shift_id', $jadwal->shift->id)->orderBy('nomor_jam')->get();
+        // dd($jamMapel);
+
+        return view('jadwal_detail.index', compact('jadwal', 'namaKelas', 'jadwalDetail', 'jamMapel'));
     }
+
+    // public function index(Jadwal $jadwal)
+    // {
+    //     $jadwal->load('kelas', 'shift');
+
+    //     $namaKelas = $jadwal->kelas->nama_kelas;
+
+    //     $shift = $jadwal->shift;
+    //     if (!$shift) {
+    //         return redirect()->back()->with('error', 'Shift belum dipilih untuk jadwal ini.');
+    //     }
+
+    //     // Ambil semua slot jam sesuai shift
+    //     $jamMapels = JamMapel::where('shift_id', $shift->id)
+    //         ->orderBy('nomor_jam')
+    //         ->get();
+
+    //     // Ambil semua detail per jam
+    //     $detailJamMapels = DetailJamMapel::with(['jadwalDetail.mapel', 'jadwalDetail.guru', 'jamMapel'])
+    //         ->where('jadwal_id', $jadwal->id)
+    //         ->get();
+
+    //     // Bentuk struktur Hari -> Nomor Jam -> Detail
+    //     $detailsByDay = [];
+    //     foreach ($detailJamMapels as $detailJam) {
+    //         $hari = $detailJam->jadwalDetail->hari;
+    //         $jamId = $detailJam->jam_mapel_id; // pakai id
+
+    //         $detailsByDay[$hari][$jamId] = [
+    //             'mapel' => $detailJam->jadwalDetail->mapel,
+    //             'guru' => $detailJam->jadwalDetail->guru,
+    //         ];
+    //     }
+
+
+    //     // Urutkan slot per hari biar rapih
+    //     foreach ($detailsByDay as $hari => $slots) {
+    //         ksort($detailsByDay[$hari]);
+    //     }
+
+    //     return view('jadwal_detail.index', [
+    //         'jadwal' => $jadwal,
+    //         'namaKelas' => $namaKelas,
+    //         'jamMapels' => $jamMapels,
+    //         'detailsByDay' => $detailsByDay,
+    //     ]);
+    // }
 
 
     public function create(Jadwal $jadwal)
@@ -107,7 +110,6 @@ class JadwalDetailController extends Controller
         ]);
     }
 
-
     public function store(Request $request, Jadwal $jadwal)
     {
         $request->validate([
@@ -118,11 +120,6 @@ class JadwalDetailController extends Controller
         ]);
 
         // Cegah duplikat: satu jam_mapel + hari hanya bisa dipakai sekali
-        // $exists = JadwalDetail::where('jadwal_id', $jadwal->id)
-        //     ->where('hari', $request->hari)
-        //     ->where('jam_mapel_id', $request->jam_mapel_id)
-        //     ->exists();
-
         $exists = DetailJamMapel::where('jadwal_id', $jadwal->id)
             ->whereHas('jadwalDetail', function ($query) use ($request) {
                 $query->where('hari', $request->hari);
@@ -136,10 +133,13 @@ class JadwalDetailController extends Controller
             ])->withInput();
         }
 
-        $jadwal->details()->create($request->only(['mapel_id', 'guru_id', 'hari']));
+        // Buat jadwal detail terlebih dahulu
+        $jadwalDetail = $jadwal->details()->create($request->only(['mapel_id', 'guru_id', 'hari', 'jadwal_id', 'jam_mapel_id']));
+
+        // Kemudian buat detail jam mapel
         DetailJamMapel::create([
             'jadwal_id' => $jadwal->id,
-            'jadwal_detail_id' => $jadwal->details()->latest()->first()->id,
+            'jadwal_detail_id' => $jadwalDetail->id,
             'jam_mapel_id' => $request->jam_mapel_id,
         ]);
 
@@ -151,10 +151,9 @@ class JadwalDetailController extends Controller
     {
         $mapels = Mapel::orderBy('nama_mapel')->get();
         $gurus = Guru::orderBy('nama_guru')->get();
-        $detailJamMapel = DetailJamMapel::where('jadwal_detail_id', $detail->id)->first();
         $hari = $detail->hari;
-        $jamMapel = $detailJamMapel->jamMapel;
-        // dd($jamMapel);
+        $jamMapel = $detail->jamMapel;
+
 
         return view('jadwal_detail.edit', [
             'jadwal' => $jadwal,
@@ -183,7 +182,13 @@ class JadwalDetailController extends Controller
             'jam_mapel_id.exists' => 'Jam pelajaran tidak valid.',
         ]);
 
-        $detail->update($request->only(['mapel_id', 'guru_id', 'hari']));
+        $detail->update($request->only(['mapel_id', 'guru_id', 'hari', 'jam_mapel_id', 'jadwal_id']));
+
+        // Update juga jam mapel di DetailJamMapel jika diperlukan
+        $detailJamMapel = DetailJamMapel::where('jadwal_detail_id', $detail->id)->first();
+        if ($detailJamMapel && $detailJamMapel->jam_mapel_id != $request->jam_mapel_id) {
+            $detailJamMapel->update(['jam_mapel_id' => $request->jam_mapel_id]);
+        }
 
         return redirect()->route('guru-piket.jadwal.details.index', $jadwal->id)
             ->with('success', 'Detail jadwal berhasil diperbarui.');
@@ -191,6 +196,10 @@ class JadwalDetailController extends Controller
 
     public function destroy(Jadwal $jadwal, JadwalDetail $detail)
     {
+        // Hapus detail jam mapel terlebih dahulu
+        DetailJamMapel::where('jadwal_detail_id', $detail->id)->delete();
+
+        // Kemudian hapus jadwal detail
         $detail->delete();
 
         return redirect()->route('guru-piket.jadwal.details.index', $jadwal->id)

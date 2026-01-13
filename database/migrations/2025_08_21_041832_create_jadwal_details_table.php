@@ -16,8 +16,8 @@ return new class extends Migration
             $table->enum('hari', ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']);
             $table->foreignId('mapel_id')->constrained('mapels')->onDelete('cascade');
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
-            $table->foreignId('jadwal_id')->constrained('jadwals')->onDelete('cascade'); 
-            // $table->string('hari'); // pilihan: 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'
+            $table->foreignId('jadwal_id')->constrained('jadwals')->onDelete('cascade');
+            $table->foreignId('jam_mapel_id')->constrained('jam_mapels')->onDelete('cascade');
             $table->timestamps();
         });
     }

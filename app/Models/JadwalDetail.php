@@ -11,8 +11,8 @@ class JadwalDetail extends Model
 
     protected $fillable = [
         'jadwal_id',
-        'jam_mapel_id',
         'mapel_id',
+        'jam_mapel_id',
         'guru_id',
         'hari',
     ];
@@ -35,5 +35,10 @@ class JadwalDetail extends Model
     public function guru()
     {
         return $this->belongsTo(Guru::class);
+    }
+
+    public function detailJamMapels()
+    {
+        return $this->hasMany(DetailJamMapel::class);
     }
 }

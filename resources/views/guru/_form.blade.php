@@ -59,7 +59,7 @@
         <input type="password" id="password" name="password"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('password') border-red-500 @enderror"
             @if (!isset($guru)) required @endif>
-        @if (isset($guru))
+        @if ($guru->id != null)
             <p class="mt-1 text-sm text-gray-500">Kosongkan jika tidak ingin mengubah password.</p>
         @endif
         @error('password')

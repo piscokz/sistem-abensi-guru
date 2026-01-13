@@ -39,10 +39,31 @@ class AuthenticatedSessionController extends Controller
 
         // paksa redirect ke halaman tertentu berdasarkan role
         return match ($role) {
-            'kurikulum'   => redirect()->to('/dashboard'),
-            'guru_piket'  => redirect()->to('/dashboard'),
-            'guru_mapel'  => redirect()->to('/'),
-            'kelas_siswa' => redirect()->to('/jadwal_kelas'),
+            'kurikulum'   => redirect()->to(route('dashboard')),
+            'guru_piket'  => redirect()->to(route('dashboard')),
+            'guru_mapel'  => redirect()->to(route('guru-mapel.jadwal.index')),
+            'kelas_siswa' => redirect()->to(route('kelas-siswa.jadwal.index')),
+            default       => redirect()->to('/session-default'),
+        };
+    }
+
+    public function direct() {
+        $role = Auth::user()->role;
+
+        // return match ($role) {
+        //     'kurikulum' => redirect()->intended('/dashboard'),
+        //     'guru_piket' => redirect()->intended('/dashboard'),
+        //     'guru_mapel'              => redirect()->intended('/'),
+        //     'kelas'                   => redirect()->intended('/jadwal'),
+        //     default                   => redirect()->intended('/session-default'),
+        // };
+
+        // paksa redirect ke halaman tertentu berdasarkan role
+        return match ($role) {
+            'kurikulum'   => redirect()->to(route('dashboard')),
+            'guru_piket'  => redirect()->to(route('dashboard')),
+            'guru_mapel'  => redirect()->to(route('guru-mapel.jadwal.index')),
+            'kelas_siswa' => redirect()->to(route('kelas-siswa.jadwal.index')),
             default       => redirect()->to('/session-default'),
         };
     }

@@ -28,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CekRole::class,
         ]);
+
+        $middleware->redirectUsersTo('/'); // buat redirect ke '/' buat akses login tapi auth
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

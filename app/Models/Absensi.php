@@ -9,7 +9,7 @@ class Absensi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['guru_id', 'jadwal_detail_id', 'waktu_absen', 'qr_token_id'];
+    protected $fillable = ['guru_id', 'jadwal_detail_id', 'waktu_absen', 'qr_token_id', 'status', 'via'];
 
     public function guru()
     {   
