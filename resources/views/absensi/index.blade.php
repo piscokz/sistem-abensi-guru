@@ -82,10 +82,17 @@
 
 
             <!-- Data Table -->
+@if(session('warning'))
+    <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md text-yellow-700">
+        {{ session('warning') }}
+    </div>
+@endif
+
+
             <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6">
-                <div class="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                    Menampilkan {{ $absensis->total() }} entri. Halaman {{ $absensis->currentPage() }} dari
-                    {{ $absensis->lastPage() }}.
+                <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300 mb-4">
+                    <div>Menampilkan {{ $absensis->total() }} entri. Halaman {{ $absensis->currentPage() }} dari {{ $absensis->lastPage() }}.</div>
+                    <div class="font-semibold text-gray-800 dark:text-gray-100">Total Jam Kerja: {{ $total_jam ?? 0 }} Pertemuan</div>
                 </div>
 
                 <!-- Desktop Table -->

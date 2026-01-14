@@ -26,6 +26,12 @@
         semua {{ $tanggalSampai ? \Carbon\Carbon::parse($tanggalSampai)->translatedFormat('d M Y') : '-' }}
     </h4>
 
+    @if(isset($total_jam))
+        <div style="margin-top:10px; margin-bottom:6px;">
+            <strong>Jumlah Total Jam Kerja:</strong> {{ $total_jam }} Pertemuan
+        </div>
+    @endif
+
     <table>
         <thead>
             <tr>
