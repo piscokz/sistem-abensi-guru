@@ -18,17 +18,9 @@
                 </div>
             @endif
 
-            {{-- Tombol Tambah --}}
-            <div class="flex justify-end">
-                <a href="{{ route('guru-piket.mapel.create') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor" class="w-4 h-4 text-white">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Mapel
-                </a>
-            </div>
+
+
+
 
             {{-- Tampilan Kartu (Mobile) --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-4">
@@ -61,6 +53,31 @@
                     </div>
                 @endforelse
             </div>
+
+                        {{-- Tombol Tambah --}}
+    
+                <div class="p-6 text-gray-900">
+                    <form method="POST" action="{{ route('guru-piket.mapel.store') }}">
+                        @csrf
+                        <div>
+                            <x-input-label for="nama_mapel" value="Nama Mata Pelajaran" />
+                            <x-text-input id="nama_mapel" class="block mt-1 w-full" type="text" name="nama_mapel"
+                                :value="old('nama_mapel')" required autofocus />
+                            <x-input-error :messages="$errors->get('nama_mapel')" class="mt-2" />
+                        </div>
+                        <div class="flex items-center justify-end mt-4">
+                            <a href="{{ route('guru-piket.mapel.index') }}"
+                                class="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Batal
+                            </a>
+                            <x-primary-button class="ms-4">
+                                {{ __('Simpan') }}
+                            </x-primary-button>
+                        </div>
+
+
+                    </form>
+                </div>
 
             {{-- Tampilan Tabel (Desktop) --}}
             <div class="hidden lg:block bg-white dark:bg-slate-800 overflow-hidden shadow-sm rounded-2xl">

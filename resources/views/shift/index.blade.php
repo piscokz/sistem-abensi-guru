@@ -23,16 +23,15 @@
             <div class="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-6 space-y-6">
                 
                 {{-- Tombol tambah --}}
-                <div class="flex justify-start">
-                    <a href="{{ route('guru-piket.shift.create') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg shadow hover:bg-slate-700 transition-all duration-150">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Tambah Shift
-                    </a>
-                </div>
+    <div class="py-3">
+        <div class="max-w-10xl mx-auto bg-white p-6 rounded shadow ">
+            <form action="{{ route('guru-piket.shift.store') }}" method="POST">
+                @include('shift._form', ['tombol' => 'Simpan'])
+            </form>
+        </div>
+    </div>
+
+
 
                 {{-- Daftar Shift --}}
                 @if ($shifts->isEmpty())

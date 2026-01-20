@@ -63,6 +63,25 @@
             </div>
         </div>
 
+        <!-- Status Libur Hari Ini -->
+        @if(auth()->user()->role === 'guru_piket')
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-5 sm:p-8">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Status Hari Ini</h3>
+            <div class="text-center">
+                @if($isHoliday)
+                    <div class="text-green-600 dark:text-green-400">
+                        <p class="text-2xl font-bold">🎉 Hari ini libur!</p>
+                        <p class="text-sm mt-2">Libur: {{ implode(', ', $holidays) }}</p>
+                    </div>
+                @else
+                    <div class="text-blue-600 dark:text-blue-400">
+                        <p class="text-2xl font-bold">💼 Hari ini kerja</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+        @endif
+
         <!-- Grafik -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-5 sm:p-8">
             <div class="flex items-center justify-between mb-4">

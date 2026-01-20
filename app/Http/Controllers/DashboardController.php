@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AbsensiExport;
+use Illuminate\Support\Facades\Http;
 
 
 class DashboardController extends Controller
@@ -66,7 +67,19 @@ class DashboardController extends Controller
             ->where('status', 'tidak_hadir')
             ->count();
 
-        return view('dashboard.index', compact('stats', 'totalHadir', 'totalTidakHadir', 'start', 'end', 'filter'));
+        // Data libur untuk guru_piket
+        $isHoliday = false;
+        $holidays = [];
+        if (auth()->user()->role === 'guru_piket') {
+            $response = Http::get('https://libur.deno.dev/api/today');
+            if ($response->successful()) {
+                $data = $response->json();
+                $isHoliday = $data['is_holiday'];
+                $holidays = $data['holiday_list'];
+            }
+        }
+
+        return view('dashboard.index', compact('stats', 'totalHadir', 'totalTidakHadir', 'start', 'end', 'filter', 'isHoliday', 'holidays'));
     }
 
     public function exportPdf(Request $request)
